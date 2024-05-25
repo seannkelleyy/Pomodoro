@@ -17,6 +17,7 @@ export const Time = ({
   setIsResetting,
 }: TimeProps) => {
   const [isBreakTime, setIsBreakTime] = useState<boolean>(false)
+  const [isPaused, setIsPaused] = useState<boolean>(false)
   const [hours, setHours] = useState<number>(
     focusLength?.hours ?? 0 >= 0 ? focusLength!.hours : 0
   )
@@ -85,10 +86,9 @@ export const Time = ({
   }
 
   useEffect(() => {
-    const interval = setInterval(() => setTime(), 1000)
+    const interval = setInterval(() => !isPaused && setTime(), 1000)
     if (isResetting) {
       resetClock()
-      console.log("resetting clock in time")
       setIsResetting(false)
     }
     return () => clearInterval(interval)
@@ -96,37 +96,78 @@ export const Time = ({
 
   return (
     <section title="Time" className="time">
-      {isBreakTime && (
-        <>
-          <h3>Break Time!</h3>
-          <h5>Ends in:</h5>
-        </>
-      )}
-      <h1>
-        {hours < 10 ? "0" + hours.toLocaleString() : hours.toLocaleString()} :{" "}
-        {minutes < 10
-          ? "0" + minutes.toLocaleString()
-          : minutes.toLocaleString()}{" "}
-        :{" "}
-        {seconds < 10
-          ? "0" + seconds.toLocaleString()
-          : seconds.toLocaleString()}
-      </h1>
-      {timerType === "Pomodoro" && breakLength && (
-        <h3>
-          Your next break length is:{" "}
-          {breakLength.hours < 10
-            ? "0" + breakLength.hours.toLocaleString()
-            : breakLength.hours.toLocaleString()}{" "}
+      <button
+        className={isPaused ? "time-button paused" : "time-button active"}
+        onClick={() => setIsPaused(!isPaused)}
+      >
+        {isBreakTime && (
+          <>
+            <h3>Break Time!</h3>
+            <h5>Ends in:</h5>
+          </>
+        )}
+        <h1>
+          {hours < 10 ? "0" + hours.toLocaleString() : hours.toLocaleString()} :{" "}
+          {minutes < 10
+            ? "0" + minutes.toLocaleString()
+            : minutes.toLocaleString()}{" "}
           :{" "}
-          {breakLength.minutes < 10
-            ? "0" + breakLength.minutes.toLocaleString()
-            : breakLength.minutes.toLocaleString()}{" "}
-          :{" "}
-          {breakLength.seconds < 10
-            ? "0" + breakLength.seconds.toLocaleString()
-            : breakLength.seconds.toLocaleString()}
-        </h3>
+          {seconds < 10
+            ? "0" + seconds.toLocaleString()
+            : seconds.toLocaleString()}
+        </h1>
+        {timerType === "Pomodoro" && breakLength && (
+          <h3>
+            Your next break length is:{" "}
+            {breakLength.hours < 10
+              ? "0" + breakLength.hours.toLocaleString()
+              : breakLength.hours.toLocaleString()}{" "}
+            :{" "}
+            {breakLength.minutes < 10
+              ? "0" + breakLength.minutes.toLocaleString()
+              : breakLength.minutes.toLocaleString()}{" "}
+            :{" "}
+            {breakLength.seconds < 10
+              ? "0" + breakLength.seconds.toLocaleString()
+              : breakLength.seconds.toLocaleString()}
+          </h3>
+        )}
+      </button>
+      {timerType === "Pomodoro" && (
+        <section title="Pomodoro Settings" className="pomodoro-settings">
+          <input
+            id="pomodoroHours"
+            placeholder="Hours"
+            aria-label="Hours"
+            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setHours(Number(e.target.value))
+            }
+          />
+          <input
+            id="pomodoroMinutes"
+            placeholder="Minutes"
+            aria-label="Minutes"
+            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setMinutes(Number(e.target.value))
+            }
+          />
+          <input
+            id="pomodoroSeconds"
+            placeholder="Seconds"
+            aria-label="Seconds"
+            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSeconds(Number(e.target.value))
+            }
+          />
+          <input
+            id="pomodoroBreakLength"
+            placeholder="Break Length"
+            aria-label="Break Length"
+            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setHours(Number(e.target.value))
+            }
+          />
+        </section>
       )}
     </section>
   )
