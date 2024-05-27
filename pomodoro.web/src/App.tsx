@@ -1,7 +1,7 @@
-import { MainPage } from "./components/MainPage"
+import { Timer } from "./components/Timer"
 
 function App() {
-  return <MainPage />
+  return <Timer />
 }
 
 export default App

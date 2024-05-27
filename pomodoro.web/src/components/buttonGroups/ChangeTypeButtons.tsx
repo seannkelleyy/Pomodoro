@@ -4,19 +4,20 @@ type ChangeTimerTypeButtonsProps = {
   setTimerType: Dispatch<SetStateAction<string>>
   setIsResetting: Dispatch<SetStateAction<boolean>>
   timerTypes: string[]
+  timerType: string
 }
 
 export const ChangeTimerTypeButtons = ({
   setTimerType,
   setIsResetting,
   timerTypes,
+  timerType,
 }: ChangeTimerTypeButtonsProps) => {
   return (
-    <div className="button-group">
+    <div className="row-flex">
       {timerTypes.map((type: string) => (
-        // eslint-disable-next-line no-extra-semi
         <button
-          className="button"
+          className={timerType === type ? "active" : ""}
           key={type}
           onClick={() => {
             setTimerType(type)
