@@ -16,6 +16,7 @@
   --paused: #e5b800;
   --active: #05a660;
   --hover: #e4e4eb;
+  --apply: #219c67;
   --buttonDarkBackground: #1a1a1a;
   --selection: #e4e4eb4b;
 
@@ -39,7 +40,7 @@ h4 {
 }
 
 input {
-  width: 10ch;
+  width: 5ch;
   height: 2.5em;
   border: none;
   border-radius: 0.25em;
@@ -66,11 +67,16 @@ input {
 
 /* Effects */
 .paused {
-  border-color: var(--paused);
+  border: 2px solid var(--paused);
 }
 
 .active {
-  border-color: var(--active);
+  border: 2px solid var(--active);
+}
+
+.apply {
+  background-color: var(--apply);
+  color: white;
 }
 
 ::selection {
@@ -101,7 +107,7 @@ input {
 }
 
 .time-button:hover {
-  border: 1px solid;
+  border: 2px solid;
 }
 
 .time-button:focus {
@@ -111,13 +117,14 @@ input {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.6em 24px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: var(--buttonDarkBackground);
   cursor: pointer;
   transition: border-color 0.25s;
+  caret-color: transparent;
 }
 
 button:hover {

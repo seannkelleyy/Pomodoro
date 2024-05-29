@@ -9,6 +9,7 @@ export const Timer = () => {
   const [intervalId, setIntervalId] = useState<number>(0)
   const [isBreakTime, setIsBreakTime] = useState<boolean>(false)
   const [isPaused, setIsPaused] = useState<boolean>(false)
+  const [fillProgress, setFillProgress] = useState(0)
   const [focusTime, setFocusTime] = useState<TimeType>({
     hours: 0,
     minutes: 25,
@@ -74,8 +75,11 @@ export const Timer = () => {
     } else {
       setTimerTime({ ...focusTime })
     }
-    setIsBreakTime(false)
   }
+
+  // const resetBreakTime = () => {
+  //   setBreakTime({ hours: 0, minutes: 5, seconds: 0 })
+  // }
 
   /* This useEffect hook will run every second to update the timer */
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,11 +97,20 @@ export const Timer = () => {
     return () => clearInterval(interval)
   })
 
-  /* This starts the count to reset the clock */
+  /* This starts the count to reset the clock and shows progress */
   const handleMouseDown = () => {
+    setFillProgress(0)
     const id = setInterval(() => {
-      resetClock()
-    }, 3000)
+      setFillProgress((prevProgress) => {
+        const newProgress = prevProgress + 10
+        if (newProgress >= 100) {
+          clearInterval(id)
+          resetClock()
+          return 100 // Return 100 to indicate the box is filled
+        }
+        return newProgress
+      })
+    }, 200)
     setIntervalId(id)
   }
 
@@ -105,6 +118,17 @@ export const Timer = () => {
   const handleMouseUp = () => {
     clearInterval(intervalId)
     setIntervalId(0)
+    setFillProgress(0)
+  }
+
+  const resetOverlayStyle = {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    height: `${fillProgress}%`,
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    transition: "height 0.2s linear",
   }
 
   return (
@@ -118,6 +142,7 @@ export const Timer = () => {
         onMouseDown={() => handleMouseDown()}
         onMouseUp={() => handleMouseUp()}
         onMouseLeave={() => handleMouseUp()}
+        style={{ position: "relative" }}
       >
         {isBreakTime && (
           <>
@@ -144,6 +169,7 @@ export const Timer = () => {
               : breakTime.seconds}
           </h3>
         )}
+        <div style={resetOverlayStyle as React.CSSProperties} />
       </button>
       <section title="Change Timer Type Buttons">
         <ChangeTimerTypeButtons
