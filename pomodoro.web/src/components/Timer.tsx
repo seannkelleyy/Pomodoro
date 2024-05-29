@@ -2,6 +2,7 @@ import { ChangeTimeSettingsButtons } from "./buttonGroups/ChangeTimeSettingsButt
 import { TimeType } from "../models/time"
 import { ChangeTimerTypeButtons } from "./buttonGroups/ChangeTypeButtons"
 import { useState, useEffect } from "react"
+import { set } from "react-hook-form"
 
 export const Timer = () => {
   const [timerType, setTimerType] = useState<string>("Pomodoro")
@@ -75,27 +76,27 @@ export const Timer = () => {
     } else {
       setTimerTime({ ...focusTime })
     }
+    setIsBreakTime(false)
   }
-
-  // const resetBreakTime = () => {
-  //   setBreakTime({ hours: 0, minutes: 5, seconds: 0 })
-  // }
 
   /* This useEffect hook will run every second to update the timer */
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (isPaused) return
-    const interval = setInterval(
-      () =>
-        timerType === "Focus" ? setTimeFocusMode() : setTimePomodoroMode(),
-      1000
-    )
+
+    const interval = setInterval(() => {
+      timerType === "Focus" ? setTimeFocusMode() : setTimePomodoroMode()
+    }, 1000)
+
+    // Reset logic
     if (isResetting) {
       resetClock()
       setIsResetting(false)
     }
+
+    // Cleanup function
     return () => clearInterval(interval)
-  })
+  }, [isPaused, isResetting, timerType]) // Dependencies array
 
   /* This starts the count to reset the clock and shows progress */
   const handleMouseDown = () => {

@@ -1,6 +1,6 @@
 import { Timer } from "./components/Timer"
 
-function App() {
+const App = () => {
   return <Timer />
 }
 
