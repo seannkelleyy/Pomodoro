@@ -49,7 +49,11 @@ export const ChangeTimeSettingsButtons = ({
         <h4>Focus Time</h4>
         <section title="Focus Time Settings" className="row-flex">
           <input
-            {...registerFocus("hours")}
+            {...registerFocus("hours", {
+              valueAsNumber: true,
+              validate: (value) => value >= 0,
+            })}
+            type="number"
             placeholder="Hours"
             aria-label="Hours"
             onClick={(e: React.MouseEvent<HTMLInputElement>) =>
@@ -58,7 +62,11 @@ export const ChangeTimeSettingsButtons = ({
           />
           <p>:</p>
           <input
-            {...registerFocus("minutes")}
+            {...registerFocus("minutes", {
+              valueAsNumber: true,
+              validate: (value) => value >= 0,
+            })}
+            type="number"
             placeholder="Minutes"
             aria-label="Minutes"
             onClick={(e: React.MouseEvent<HTMLInputElement>) =>
@@ -67,7 +75,11 @@ export const ChangeTimeSettingsButtons = ({
           />
           <p>:</p>
           <input
-            {...registerFocus("seconds")}
+            {...registerFocus("seconds", {
+              valueAsNumber: true,
+              validate: (value) => value >= 0,
+            })}
+            type="number"
             placeholder="Seconds"
             aria-label="Seconds"
             onClick={(e: React.MouseEvent<HTMLInputElement>) =>
@@ -83,7 +95,11 @@ export const ChangeTimeSettingsButtons = ({
         <h4>Break Time</h4>
         <section title="Pomodoro Break Settings" className="row-flex">
           <input
-            {...registerBreak("hours")}
+            {...registerBreak("hours", {
+              valueAsNumber: true,
+              validate: (value) => value >= 0,
+            })}
+            type="number"
             placeholder="Hours"
             aria-label="Hours"
             onClick={(e: React.MouseEvent<HTMLInputElement>) =>
@@ -92,7 +108,11 @@ export const ChangeTimeSettingsButtons = ({
           />
           <p>:</p>
           <input
-            {...registerBreak("minutes")}
+            {...registerBreak("minutes", {
+              valueAsNumber: true,
+              validate: (value) => value >= 0,
+            })}
+            type="number"
             placeholder="Minutes"
             aria-label="Minutes"
             onClick={(e: React.MouseEvent<HTMLInputElement>) =>
@@ -101,7 +121,11 @@ export const ChangeTimeSettingsButtons = ({
           />
           <p>:</p>
           <input
-            {...registerBreak("seconds")}
+            {...registerBreak("seconds", {
+              valueAsNumber: true,
+              validate: (value) => value >= 0,
+            })}
+            type="number"
             placeholder="Seconds"
             aria-label="Seconds"
             onClick={(e: React.MouseEvent<HTMLInputElement>) =>

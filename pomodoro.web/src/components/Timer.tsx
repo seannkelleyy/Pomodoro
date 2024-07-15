@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ChangeTimeSettingsButtons } from "./buttonGroups/ChangeTimeSettingsButtons"
 import { TimeType } from "../models/time"
 import { ChangeTimerTypeButtons } from "./buttonGroups/ChangeTypeButtons"
@@ -5,65 +6,47 @@ import { useState, useEffect } from "react"
 
 export const Timer = () => {
   const [timerType, setTimerType] = useState<string>("Pomodoro")
-  const [isResetting, setIsResetting] = useState<boolean>(false)
   const [intervalId, setIntervalId] = useState<number>(0)
   const [isBreakTime, setIsBreakTime] = useState<boolean>(false)
   const [isPaused, setIsPaused] = useState<boolean>(false)
-  const [fillProgress, setFillProgress] = useState(0)
+  const [resetFillProgress, setResetFillProgress] = useState<number>(0)
   const [focusTime, setFocusTime] = useState<TimeType>({
     hours: 0,
-    minutes: 25,
-    seconds: 0,
+    minutes: 0,
+    seconds: 30,
   })
   const [breakTime, setBreakTime] = useState<TimeType>({
     hours: 0,
-    minutes: 5,
-    seconds: 0,
+    minutes: 0,
+    seconds: 20,
   })
   const [timerTime, setTimerTime] = useState<TimeType>({ ...focusTime })
 
   const setTimeFocusMode = () => {
     setTimerTime((prevTime) => {
-      if (prevTime.seconds < 59) {
-        return { ...prevTime, seconds: prevTime.seconds + 1 }
-      } else if (prevTime.minutes < 59) {
-        return { ...prevTime, seconds: 0, minutes: prevTime.minutes + 1 }
-      } else {
-        return {
-          ...prevTime,
-          seconds: 0,
-          minutes: 0,
-          hours: prevTime.hours + 1,
-        }
-      }
+      const totalSeconds =
+        prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds + 1
+      const hours = Math.floor(totalSeconds / 3600)
+      const minutes = Math.floor((totalSeconds % 3600) / 60)
+      const seconds = totalSeconds % 60
+      return { hours, minutes, seconds }
     })
   }
 
   const setTimePomodoroMode = () => {
     setTimerTime((prevTime) => {
-      if (
-        prevTime.hours === 0 &&
-        prevTime.minutes === 0 &&
-        prevTime.seconds === 0
-      ) {
-        setIsBreakTime(!isBreakTime)
-        if (!isBreakTime) {
-          return breakTime
-        } else {
-          return focusTime
-        }
-      }
-      if (prevTime.seconds === 0) {
-        if (prevTime.minutes > 0) {
-          return { ...prevTime, seconds: 59, minutes: prevTime.minutes - 1 }
-        }
+      const totalSeconds =
+        prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds
+
+      if (totalSeconds === 0) {
+        setIsBreakTime((prevIsBreakTime) => !prevIsBreakTime)
       } else {
-        return { ...prevTime, seconds: prevTime.seconds - 1 }
-      }
-      if (prevTime.minutes === 0) {
-        if (prevTime.hours > 0) {
-          return { ...prevTime, minutes: 59, hours: prevTime.hours - 1 }
-        }
+        const newTotalSeconds = totalSeconds - 1
+        const hours = Math.floor(newTotalSeconds / 3600)
+        const minutes = Math.floor((newTotalSeconds % 3600) / 60)
+        const seconds = newTotalSeconds % 60
+
+        return { hours, minutes, seconds }
       }
       return prevTime
     })
@@ -78,27 +61,27 @@ export const Timer = () => {
     setIsBreakTime(false)
   }
 
-  /* This useEffect hook will run every second to update the timer */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setTimerTime(isBreakTime ? breakTime : focusTime)
+  }, [isBreakTime])
+
+  useEffect(() => {
+    resetClock()
+  }, [timerType, setTimerType])
+
   useEffect(() => {
     if (isPaused) return
-
     const interval = setInterval(() => {
       timerType === "Focus" ? setTimeFocusMode() : setTimePomodoroMode()
     }, 1000)
-    if (isResetting) {
-      resetClock()
-      setIsResetting(false)
-    }
     return () => clearInterval(interval)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPaused, isResetting, timerType])
+  }, [isPaused, timerType])
 
   /* This starts the count to reset the clock and shows progress */
   const handleMouseDown = () => {
-    setFillProgress(0)
+    setResetFillProgress(0)
     const id = setInterval(() => {
-      setFillProgress((prevProgress) => {
+      setResetFillProgress((prevProgress) => {
         const newProgress = prevProgress + 10
         if (newProgress >= 100) {
           clearInterval(id)
@@ -115,7 +98,7 @@ export const Timer = () => {
   const handleMouseUp = () => {
     clearInterval(intervalId)
     setIntervalId(0)
-    setFillProgress(0)
+    setResetFillProgress(0)
   }
 
   const resetOverlayStyle = {
@@ -123,7 +106,7 @@ export const Timer = () => {
     bottom: 0,
     left: 0,
     width: "100%",
-    height: `${fillProgress}%`,
+    height: `${resetFillProgress}%`,
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     transition: "height 0.2s linear",
   }
@@ -172,7 +155,6 @@ export const Timer = () => {
         <ChangeTimerTypeButtons
           setTimerType={setTimerType}
           timerTypes={["Pomodoro", "Focus"]}
-          setIsResetting={setIsResetting}
           timerType={timerType}
         />
       </section>

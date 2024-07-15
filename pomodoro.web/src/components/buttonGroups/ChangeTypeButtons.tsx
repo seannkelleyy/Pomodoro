@@ -2,14 +2,12 @@ import { Dispatch, SetStateAction } from "react"
 
 type ChangeTimerTypeButtonsProps = {
   setTimerType: Dispatch<SetStateAction<string>>
-  setIsResetting: Dispatch<SetStateAction<boolean>>
   timerTypes: string[]
   timerType: string
 }
 
 export const ChangeTimerTypeButtons = ({
   setTimerType,
-  setIsResetting,
   timerTypes,
   timerType,
 }: ChangeTimerTypeButtonsProps) => {
@@ -21,7 +19,6 @@ export const ChangeTimerTypeButtons = ({
           key={type}
           onClick={() => {
             setTimerType(type)
-            setIsResetting(true)
           }}
         >
           {type}
