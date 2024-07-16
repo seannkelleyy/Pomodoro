@@ -1,8 +1,10 @@
-import React, { useEffect } from "react"
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { TimeType } from "../../models/time"
 
 type ChangeTimeButtonsProps = {
+  currentMode: string
   setFocusTime: React.Dispatch<React.SetStateAction<TimeType>>
   focusTime: TimeType
   setBreakTime: React.Dispatch<React.SetStateAction<TimeType>>
@@ -11,12 +13,15 @@ type ChangeTimeButtonsProps = {
 }
 
 export const ChangeTimeSettingsButtons = ({
+  currentMode,
   setFocusTime,
   focusTime,
   setBreakTime,
   breakTime,
   resetClock,
 }: ChangeTimeButtonsProps) => {
+  const [isChangingBreakTime, setIsChangingBreakTime] = useState(false)
+  const [isChangingFocusTime, setIsChangingFocusTime] = useState(false)
   const {
     register: registerFocus,
     handleSubmit: handleSubmitFocus,
@@ -29,18 +34,26 @@ export const ChangeTimeSettingsButtons = ({
   } = useForm<TimeType>()
 
   const onSubmitFocus = (data: TimeType) => {
+    setIsChangingFocusTime(true)
     setFocusTime(data)
   }
 
   const onSubmitBreak = (data: TimeType) => {
+    setIsChangingBreakTime(true)
     setBreakTime(data)
   }
 
   useEffect(() => {
     resetFocus(focusTime)
     resetBreak(breakTime)
-    resetClock()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isChangingFocusTime && currentMode === "Focus") {
+      resetClock()
+      setIsChangingFocusTime(false)
+    }
+    if (isChangingBreakTime && currentMode === "Break") {
+      resetClock()
+      setIsChangingBreakTime(false)
+    }
   }, [focusTime, breakTime, resetFocus, resetBreak])
 
   return (

@@ -28,11 +28,11 @@
 h1 {
   font-size: 3.2em;
   line-height: 1;
-  caret-color: transparent;
 }
 
-h3 {
-  caret-color: transparent;
+h2 {
+  font-size: 2.4em;
+  line-height: 1;
 }
 
 h4 {
@@ -49,7 +49,6 @@ input {
   text-align: center;
   box-sizing: border-box;
   background-color: var(--buttonDarkBackground);
-  caret-color: transparent;
 }
 
 /* Pomodoro Timer */
@@ -102,6 +101,7 @@ input {
 /* Buttons */
 .time-button {
   margin: 1em;
+  position: relative;
 }
 
 .time-button:hover {
@@ -122,7 +122,6 @@ button {
   background-color: var(--buttonDarkBackground);
   cursor: pointer;
   transition: border-color 0.25s;
-  caret-color: transparent;
 }
 
 button:hover {

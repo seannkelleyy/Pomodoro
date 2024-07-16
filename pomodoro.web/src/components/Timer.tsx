@@ -3,6 +3,7 @@ import { ChangeTimeSettingsButtons } from "./buttonGroups/ChangeTimeSettingsButt
 import { TimeType } from "../models/time"
 import { ChangeTimerTypeButtons } from "./buttonGroups/ChangeTypeButtons"
 import { useState, useEffect } from "react"
+import dayjs from "dayjs"
 
 export const Timer = () => {
   const [timerType, setTimerType] = useState<string>("Pomodoro")
@@ -12,13 +13,13 @@ export const Timer = () => {
   const [resetFillProgress, setResetFillProgress] = useState<number>(0)
   const [focusTime, setFocusTime] = useState<TimeType>({
     hours: 0,
-    minutes: 0,
-    seconds: 30,
+    minutes: 25,
+    seconds: 0,
   })
   const [breakTime, setBreakTime] = useState<TimeType>({
     hours: 0,
-    minutes: 0,
-    seconds: 20,
+    minutes: 5,
+    seconds: 0,
   })
   const [timerTime, setTimerTime] = useState<TimeType>({ ...focusTime })
 
@@ -67,7 +68,7 @@ export const Timer = () => {
 
   useEffect(() => {
     resetClock()
-  }, [timerType, setTimerType])
+  }, [timerType])
 
   useEffect(() => {
     if (isPaused) return
@@ -114,7 +115,9 @@ export const Timer = () => {
   return (
     <section title="Timer" className="timer">
       <section title="Heading" className="title">
-        <h1>{timerType}</h1>
+        <h1 style={{ marginBottom: "0" }}>{dayjs().format("dddd")}</h1>
+        <h2>{dayjs().format("MMMM D, YYYY")}</h2>
+        <h2>{timerType}</h2>
       </section>
       <button
         className={isPaused ? "time-button paused" : "time-button active"}
@@ -122,7 +125,6 @@ export const Timer = () => {
         onMouseDown={() => handleMouseDown()}
         onMouseUp={() => handleMouseUp()}
         onMouseLeave={() => handleMouseUp()}
-        style={{ position: "relative" }}
       >
         {isBreakTime && (
           <>
@@ -160,6 +162,7 @@ export const Timer = () => {
       </section>
       {timerType === "Pomodoro" && (
         <ChangeTimeSettingsButtons
+          currentMode={isBreakTime ? "Break" : "Focus"}
           setFocusTime={setFocusTime}
           focusTime={focusTime}
           setBreakTime={setBreakTime}
