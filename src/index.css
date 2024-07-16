@@ -1,129 +1,129 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  text-align: center;
+	font-family: Segoe UI, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+	text-align: center;
 
-  color-scheme: light dark;
-  color: #f4f4f5;
-  background-color: var(--background);
+	color-scheme: light dark;
+	color: #f4f4f5;
+	background-color: var(--background);
 
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 
-  --background: #181818;
-  --paused: #eab308;
-  --active: #22c55e;
-  --hover: #f4f4f5;
-  --apply: #22c55e;
-  --buttonDarkBackground: #222222;
-  --selection: #e4e4eb4b;
+	--background: #181818;
+	--paused: #eab308;
+	--active: #22c55e;
+	--hover: #f4f4f5;
+	--apply: #22c55e;
+	--buttonDarkBackground: #222222;
+	--selection: #e4e4eb4b;
 
-  overflow-y: hidden;
-  overflow-x: hidden;
+	overflow-y: hidden;
+	overflow-x: hidden;
 }
 
 /* Standard CSS Reset */
 h1 {
-  font-size: 3.2em;
-  line-height: 1;
+	font-size: 3.2em;
+	line-height: 1;
 }
 
 h2 {
-  font-size: 2.4em;
-  line-height: 1;
+	font-size: 2.4em;
+	line-height: 1;
 }
 
 h4 {
-  margin: none;
+	margin: none;
 }
 
 input {
-  width: 6ch;
-  height: 2.5em;
-  border: none;
-  border-radius: 0.25em;
-  padding: 0 0.5em;
-  font-size: 1.15em;
-  text-align: center;
-  box-sizing: border-box;
-  background-color: var(--buttonDarkBackground);
+	width: 6ch;
+	height: 2.5em;
+	border: none;
+	border-radius: 0.25em;
+	padding: 0 0.5em;
+	font-size: 1.15em;
+	text-align: center;
+	box-sizing: border-box;
+	background-color: var(--buttonDarkBackground);
 }
 
 /* Pomodoro Timer */
 .time {
-  padding: 0 1.5em;
+	padding: 0 1.5em;
 }
 
 .pomodoro-settings {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5em;
-  margin: 1em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5em;
+	margin: 1em;
 }
 
 /* Effects */
 .paused {
-  border: 2px solid var(--paused);
+	border: 2px solid var(--paused);
 }
 
 .active {
-  border: 2px solid var(--active);
+	border: 2px solid var(--active);
 }
 
 .apply {
-  background-color: var(--apply);
+	background-color: var(--apply);
 }
 
 ::selection {
-  background-color: var(--selection);
+	background-color: var(--selection);
 }
 
 /* Custom Boxes */
 .timer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1em;
-  width: 100%;
-  height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 1em;
+	width: 100%;
+	height: 100vh;
 }
 
 .row-flex {
-  display: flex;
-  gap: 1em;
-  align-items: center;
+	display: flex;
+	gap: 1em;
+	align-items: center;
 }
 
 /* Buttons */
 .time-button {
-  margin: 1em;
-  position: relative;
+	margin: 1em;
+	position: relative;
 }
 
 .time-button:hover {
-  border: 2px solid;
+	border: 2px solid;
 }
 
 .time-button:focus {
-  outline: none;
+	outline: none;
 }
 
 button {
-  border-radius: 6px;
-  border: 1px solid transparent;
-  padding: 0.5em 1em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--buttonDarkBackground);
-  cursor: pointer;
-  transition: border-color 0.25s;
+	border-radius: 6px;
+	border: 1px solid transparent;
+	padding: 0.5em 1em;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	background-color: var(--buttonDarkBackground);
+	cursor: pointer;
+	transition: border-color 0.25s;
 }
 
 button:hover {
-  border-color: var(--hover);
+	border-color: var(--hover);
 }
