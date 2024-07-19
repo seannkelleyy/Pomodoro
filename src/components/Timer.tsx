@@ -5,6 +5,27 @@ import { ChangeTimerTypeButtons } from './buttonGroups/ChangeTypeButtons'
 import { useState, useEffect, useRef } from 'react'
 import dayjs from 'dayjs'
 
+type FormatTimeProps = {
+	time: TimeType
+}
+
+const FormatTime = ({ time }: FormatTimeProps): JSX.Element => {
+	const formatTimeUnit = (unit: number): string => (unit < 10 ? `0${unit}` : `${unit}`)
+	return (
+		<>
+			{formatTimeUnit(time.hours)} : {formatTimeUnit(time.minutes)} : {formatTimeUnit(time.seconds)}
+		</>
+	)
+}
+
+const convertTime = (totalMilliseconds: number): TimeType => {
+	const hours = Math.floor(totalMilliseconds / 3600000)
+	const minutes = Math.floor((totalMilliseconds % 3600000) / 60000)
+	const seconds = Math.floor((totalMilliseconds % 60000) / 1000)
+	const milliseconds = totalMilliseconds % 1000
+	return { hours, minutes, seconds, milliseconds }
+}
+
 export const Timer = () => {
 	const [timerType, setTimerType] = useState<string>('Pomodoro')
 	const [intervalId, setIntervalId] = useState<number>(0)
@@ -26,33 +47,6 @@ export const Timer = () => {
 		milliseconds: 0,
 	})
 	const [timerTime, setTimerTime] = useState<TimeType>({ ...focusTime })
-
-	const setTimeFocusMode = (timeDifference: number) => {
-		setTimerTime((prevTime) => {
-			const totalMilliseconds = prevTime.hours * 3600000 + prevTime.minutes * 60000 + prevTime.seconds * 1000 + prevTime.milliseconds + timeDifference
-			const hours = Math.floor(totalMilliseconds / 3600000)
-			const minutes = Math.floor((totalMilliseconds % 3600000) / 60000)
-			const seconds = Math.floor((totalMilliseconds % 60000) / 1000)
-			const milliseconds = totalMilliseconds % 1000
-			return { hours, minutes, seconds, milliseconds }
-		})
-	}
-
-	const setTimePomodoroMode = (timeDifference: number) => {
-		setTimerTime((prevTime) => {
-			const totalMilliseconds = prevTime.hours * 3600000 + prevTime.minutes * 60000 + prevTime.seconds * 1000 + prevTime.milliseconds - timeDifference
-			if (totalMilliseconds <= 500) {
-				setIsBreakTime((prevIsBreakTime) => !prevIsBreakTime)
-			} else {
-				const hours = Math.floor(totalMilliseconds / 3600000)
-				const minutes = Math.floor((totalMilliseconds % 3600000) / 60000)
-				const seconds = Math.floor((totalMilliseconds % 60000) / 1000)
-				const milliseconds = totalMilliseconds % 1000
-				return { hours, minutes, seconds, milliseconds }
-			}
-			return prevTime
-		})
-	}
 
 	const resetClock = () => {
 		if (timerType === 'Focus') {
@@ -79,7 +73,16 @@ export const Timer = () => {
 			let timeDifference = currentTime - previousTimeRef.current
 			timeDifference = Math.round(timeDifference / 100) * 100
 			previousTimeRef.current = currentTime
-			timerType === 'Focus' ? setTimeFocusMode(timeDifference) : setTimePomodoroMode(timeDifference)
+			setTimerTime((prevTime) => {
+				let totalMilliseconds = prevTime.hours * 3600000 + prevTime.minutes * 60000 + prevTime.seconds * 1000 + prevTime.milliseconds
+				timerType === 'Focus' ? (totalMilliseconds += timeDifference) : (totalMilliseconds -= timeDifference)
+				if (timerType === 'Pomodoro' && totalMilliseconds <= 500) {
+					setIsBreakTime((prevIsBreakTime) => !prevIsBreakTime)
+				} else {
+					return convertTime(totalMilliseconds)
+				}
+				return prevTime
+			})
 		}, 1000)
 		return () => clearInterval(interval)
 	}, [isPaused, timerType, startButtonVisible])
@@ -107,17 +110,6 @@ export const Timer = () => {
 		setIntervalId(0)
 		setResetFillProgress(0)
 	}
-
-	const resetOverlayStyle = {
-		position: 'absolute',
-		bottom: 0,
-		left: 0,
-		width: '100%',
-		height: `${resetFillProgress}%`,
-		backgroundColor: 'rgba(255, 255, 255, 0.5)',
-		transition: 'height 0.2s linear',
-	}
-
 	return (
 		<section title='Timer' className='timer'>
 			<section title='Heading' className='title'>
@@ -143,16 +135,14 @@ export const Timer = () => {
 					</>
 				)}
 				<h1>
-					{timerTime.hours < 10 ? '0' + timerTime.hours : timerTime.hours} : {timerTime.minutes < 10 ? '0' + timerTime.minutes : timerTime.minutes} :{' '}
-					{timerTime.seconds < 10 ? '0' + timerTime.seconds : timerTime.seconds}
+					<FormatTime time={timerTime} />
 				</h1>
 				{timerType === 'Pomodoro' && (
 					<h3>
-						Your next break length is: {breakTime.hours < 10 ? '0' + breakTime.hours : breakTime.hours} : {breakTime.minutes < 10 ? '0' + breakTime.minutes : breakTime.minutes} :{' '}
-						{breakTime.seconds < 10 ? '0' + breakTime.seconds : breakTime.seconds}
+						Your next break length is: <FormatTime time={breakTime} />
 					</h3>
 				)}
-				<div style={resetOverlayStyle as React.CSSProperties} />
+				<div className='resetOverlay' style={{ height: `${resetFillProgress}%` }} />
 			</button>
 			<section title='Change Timer Type Buttons'>
 				<ChangeTimerTypeButtons setTimerType={setTimerType} timerTypes={['Pomodoro', 'Focus']} timerType={timerType} />
