@@ -70,8 +70,7 @@ export const Timer = () => {
 		previousTimeRef.current = new Date().getTime()
 		const interval = setInterval(() => {
 			const currentTime = new Date().getTime() as number
-			let timeDifference = currentTime - previousTimeRef.current
-			timeDifference = Math.round(timeDifference / 100) * 100
+			const timeDifference = Math.round((currentTime - previousTimeRef.current) / 100) * 100
 			previousTimeRef.current = currentTime
 			setTimerTime((prevTime) => {
 				let totalMilliseconds = prevTime.hours * 3600000 + prevTime.minutes * 60000 + prevTime.seconds * 1000 + prevTime.milliseconds
