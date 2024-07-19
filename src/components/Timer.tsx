@@ -2,7 +2,7 @@
 import { ChangeTimeSettingsButtons } from './buttonGroups/ChangeTimeSettingsButtons'
 import { TimeType } from '../models/time'
 import { ChangeTimerTypeButtons } from './buttonGroups/ChangeTypeButtons'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dayjs from 'dayjs'
 
 export const Timer = () => {
@@ -11,41 +11,44 @@ export const Timer = () => {
 	const [isBreakTime, setIsBreakTime] = useState<boolean>(false)
 	const [isPaused, setIsPaused] = useState<boolean>(false)
 	const [resetFillProgress, setResetFillProgress] = useState<number>(0)
+	const [startButtonVisible, setStartButtonVisible] = useState<boolean>(true)
+	const previousTimeRef = useRef<number>(new Date().getTime())
 	const [focusTime, setFocusTime] = useState<TimeType>({
 		hours: 0,
 		minutes: 25,
 		seconds: 0,
+		milliseconds: 0,
 	})
 	const [breakTime, setBreakTime] = useState<TimeType>({
 		hours: 0,
 		minutes: 5,
 		seconds: 0,
+		milliseconds: 0,
 	})
 	const [timerTime, setTimerTime] = useState<TimeType>({ ...focusTime })
 
-	const setTimeFocusMode = () => {
+	const setTimeFocusMode = (timeDifference: number) => {
 		setTimerTime((prevTime) => {
-			const totalSeconds = prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds + 1
-			const hours = Math.floor(totalSeconds / 3600)
-			const minutes = Math.floor((totalSeconds % 3600) / 60)
-			const seconds = totalSeconds % 60
-			return { hours, minutes, seconds }
+			const totalMilliseconds = prevTime.hours * 3600000 + prevTime.minutes * 60000 + prevTime.seconds * 1000 + prevTime.milliseconds + timeDifference
+			const hours = Math.floor(totalMilliseconds / 3600000)
+			const minutes = Math.floor((totalMilliseconds % 3600000) / 60000)
+			const seconds = Math.floor((totalMilliseconds % 60000) / 1000)
+			const milliseconds = totalMilliseconds % 1000
+			return { hours, minutes, seconds, milliseconds }
 		})
 	}
 
-	const setTimePomodoroMode = () => {
+	const setTimePomodoroMode = (timeDifference: number) => {
 		setTimerTime((prevTime) => {
-			const totalSeconds = prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds
-
-			if (totalSeconds === 0) {
+			const totalMilliseconds = prevTime.hours * 3600000 + prevTime.minutes * 60000 + prevTime.seconds * 1000 + prevTime.milliseconds - timeDifference
+			if (totalMilliseconds <= 500) {
 				setIsBreakTime((prevIsBreakTime) => !prevIsBreakTime)
 			} else {
-				const newTotalSeconds = totalSeconds - 1
-				const hours = Math.floor(newTotalSeconds / 3600)
-				const minutes = Math.floor((newTotalSeconds % 3600) / 60)
-				const seconds = newTotalSeconds % 60
-
-				return { hours, minutes, seconds }
+				const hours = Math.floor(totalMilliseconds / 3600000)
+				const minutes = Math.floor((totalMilliseconds % 3600000) / 60000)
+				const seconds = Math.floor((totalMilliseconds % 60000) / 1000)
+				const milliseconds = totalMilliseconds % 1000
+				return { hours, minutes, seconds, milliseconds }
 			}
 			return prevTime
 		})
@@ -53,7 +56,7 @@ export const Timer = () => {
 
 	const resetClock = () => {
 		if (timerType === 'Focus') {
-			setTimerTime({ hours: 0, minutes: 0, seconds: 0 })
+			setTimerTime({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0 })
 		} else {
 			setTimerTime({ ...focusTime })
 		}
@@ -69,12 +72,17 @@ export const Timer = () => {
 	}, [timerType])
 
 	useEffect(() => {
-		if (isPaused) return
+		if (isPaused || startButtonVisible) return
+		previousTimeRef.current = new Date().getTime()
 		const interval = setInterval(() => {
-			timerType === 'Focus' ? setTimeFocusMode() : setTimePomodoroMode()
+			const currentTime = new Date().getTime() as number
+			let timeDifference = currentTime - previousTimeRef.current
+			timeDifference = Math.round(timeDifference / 100) * 100
+			previousTimeRef.current = currentTime
+			timerType === 'Focus' ? setTimeFocusMode(timeDifference) : setTimePomodoroMode(timeDifference)
 		}, 1000)
 		return () => clearInterval(interval)
-	}, [isPaused, timerType])
+	}, [isPaused, timerType, startButtonVisible])
 
 	/* This starts the count to reset the clock and shows progress */
 	const handleMouseDown = () => {
@@ -116,6 +124,11 @@ export const Timer = () => {
 				<h1 style={{ marginBottom: '0' }}>{dayjs().format('dddd')}</h1>
 				<h2>{dayjs().format('MMMM D, YYYY')}</h2>
 			</section>
+			{startButtonVisible && (
+				<button className='apply' onClick={() => setStartButtonVisible(false)}>
+					Start
+				</button>
+			)}
 			<button
 				className={isPaused ? 'time-button paused' : 'time-button active'}
 				onClick={() => setIsPaused(!isPaused)}
