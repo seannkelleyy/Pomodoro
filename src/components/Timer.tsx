@@ -4,33 +4,16 @@ import { TimeType } from '../models/time'
 import { ChangeTimerTypeButtons } from './buttonGroups/ChangeTypeButtons'
 import { useState, useEffect, useRef } from 'react'
 import dayjs from 'dayjs'
-
-type FormatTimeProps = {
-	time: TimeType
-}
-
-const FormatTime = ({ time }: FormatTimeProps): JSX.Element => {
-	const formatTimeUnit = (unit: number): string => (unit < 10 ? `0${unit}` : `${unit}`)
-	return (
-		<>
-			{formatTimeUnit(time.hours)} : {formatTimeUnit(time.minutes)} : {formatTimeUnit(time.seconds)}
-		</>
-	)
-}
-
-const convertTime = (totalMilliseconds: number): TimeType => {
-	const hours = Math.floor(totalMilliseconds / 3600000)
-	const minutes = Math.floor((totalMilliseconds % 3600000) / 60000)
-	const seconds = Math.floor((totalMilliseconds % 60000) / 1000)
-	const milliseconds = totalMilliseconds % 1000
-	return { hours, minutes, seconds, milliseconds }
-}
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { convertTime } from '../utils/convertTime'
+import { FormatTime } from '../utils/FormatTime'
 
 export const Timer = () => {
 	const [timerType, setTimerType] = useState<string>('Pomodoro')
 	const [intervalId, setIntervalId] = useState<number>(0)
 	const [isBreakTime, setIsBreakTime] = useState<boolean>(false)
 	const [isPaused, setIsPaused] = useState<boolean>(false)
+	const [showSettings, setShowSettings] = useState<boolean>(false)
 	const [resetFillProgress, setResetFillProgress] = useState<number>(0)
 	const [startButtonVisible, setStartButtonVisible] = useState<boolean>(true)
 	const previousTimeRef = useRef<number>(new Date().getTime())
@@ -109,6 +92,7 @@ export const Timer = () => {
 		setIntervalId(0)
 		setResetFillProgress(0)
 	}
+
 	return (
 		<section title='Timer' className='timer'>
 			<section title='Heading' className='title'>
@@ -147,15 +131,30 @@ export const Timer = () => {
 				<ChangeTimerTypeButtons setTimerType={setTimerType} timerTypes={['Pomodoro', 'Focus']} timerType={timerType} />
 			</section>
 			{timerType === 'Pomodoro' && (
-				<ChangeTimeSettingsButtons
-					currentMode={isBreakTime ? 'Break' : 'Focus'}
-					setFocusTime={setFocusTime}
-					focusTime={focusTime}
-					setBreakTime={setBreakTime}
-					breakTime={breakTime}
-					resetClock={resetClock}
-				/>
+				<>
+					<button
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							marginTop: '1rem',
+						}}
+						onClick={() => setShowSettings(!showSettings)}
+					>
+						Timer Settings {showSettings ? <ChevronDown /> : <ChevronUp />}
+					</button>
+					{showSettings && (
+						<ChangeTimeSettingsButtons
+							currentMode={isBreakTime ? 'Break' : 'Focus'}
+							setFocusTime={setFocusTime}
+							focusTime={focusTime}
+							setBreakTime={setBreakTime}
+							breakTime={breakTime}
+							resetClock={resetClock}
+						/>
+					)}
+				</>
 			)}
 		</section>
 	)
 }
+
