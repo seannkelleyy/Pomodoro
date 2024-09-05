@@ -6,10 +6,9 @@ export const useTimer = (initialFocusTime: TimeType, initialBreakTime: TimeType)
 	const [timerType, setTimerType] = useState<string>('Pomodoro')
 	const [intervalId, setIntervalId] = useState<number>(0)
 	const [isBreakTime, setIsBreakTime] = useState<boolean>(false)
-	const [isPaused, setIsPaused] = useState<boolean>(false)
+	const [isPaused, setIsPaused] = useState<boolean>(true)
 	const [showSettings, setShowSettings] = useState<boolean>(false)
 	const [resetFillProgress, setResetFillProgress] = useState<number>(0)
-	const [startButtonVisible, setStartButtonVisible] = useState<boolean>(true)
 	const previousTimeRef = useRef<number>(new Date().getTime())
 	const [focusTime, setFocusTime] = useState<TimeType>(initialFocusTime)
 	const [breakTime, setBreakTime] = useState<TimeType>(initialBreakTime)
@@ -35,7 +34,7 @@ export const useTimer = (initialFocusTime: TimeType, initialBreakTime: TimeType)
 	}, [timerType])
 
 	useEffect(() => {
-		if (isPaused || startButtonVisible) return
+		if (isPaused) return
 		previousTimeRef.current = new Date().getTime()
 		const interval = setInterval(() => {
 			const currentTime = new Date().getTime() as number
@@ -53,7 +52,7 @@ export const useTimer = (initialFocusTime: TimeType, initialBreakTime: TimeType)
 			})
 		}, 1000)
 		return () => clearInterval(interval)
-	}, [isPaused, timerType, startButtonVisible])
+	}, [isPaused, timerType])
 
 	const handleMouseDown = () => {
 		setResetFillProgress(0)
@@ -87,8 +86,6 @@ export const useTimer = (initialFocusTime: TimeType, initialBreakTime: TimeType)
 		showSettings,
 		setShowSettings,
 		resetFillProgress,
-		startButtonVisible,
-		setStartButtonVisible,
 		focusTime,
 		setFocusTime,
 		breakTime,
