@@ -6,10 +6,11 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 import { FormatTime } from '../utils/FormatTime'
 import { ContactFooter } from '../components/footer/Footer'
 import { useTimer } from '../hooks/useTimer'
+import { useState } from 'react'
 
 export const Timer = () => {
 	const startingPomodoroTime = { hours: 0, minutes: 25, seconds: 0, milliseconds: 0 }
-	const startingFocusTime = { hours: 0, minutes: 25, seconds: 0, milliseconds: 0 }
+	const startingFocusTime = { hours: 0, minutes: 5, seconds: 0, milliseconds: 0 }
 	const {
 		timerType,
 		setTimerType,
@@ -20,8 +21,6 @@ export const Timer = () => {
 		showSettings,
 		setShowSettings,
 		resetFillProgress,
-		startButtonVisible,
-		setStartButtonVisible,
 		focusTime,
 		setFocusTime,
 		breakTime,
@@ -30,6 +29,7 @@ export const Timer = () => {
 		handleMouseDown,
 		handleMouseUp,
 	} = useTimer(startingPomodoroTime, startingFocusTime)
+	const [hasStartedTimer, setHasStartedTimer] = useState<boolean>(false)
 
 	return (
 		<section title='Timer' className='timer'>
@@ -37,18 +37,17 @@ export const Timer = () => {
 				<h1 style={{ marginBottom: '0' }}>{dayjs().format('dddd')}</h1>
 				<h2>{dayjs().format('MMMM D, YYYY')}</h2>
 			</section>
-			{startButtonVisible && (
-				<button className='apply' onClick={() => setStartButtonVisible(false)}>
-					Start
-				</button>
-			)}
 			<button
 				className={isPaused ? 'time-button paused' : 'time-button active'}
-				onClick={() => setIsPaused(!isPaused)}
+				onClick={() => {
+					setIsPaused(!isPaused)
+					!hasStartedTimer && setHasStartedTimer(true)
+				}}
 				onMouseDown={() => handleMouseDown()}
 				onMouseUp={() => handleMouseUp()}
 				onMouseLeave={() => handleMouseUp()}
 			>
+				{!hasStartedTimer && <h3>Click to Start</h3>}
 				{isBreakTime && (
 					<>
 						<h3>Break Time!</h3>
