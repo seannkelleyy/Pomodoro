@@ -31,13 +31,10 @@ export const ChangeTimeSettingsButtons = ({ currentMode, setFocusTime, focusTime
 	useEffect(() => {
 		resetFocus(focusTime)
 		resetBreak(breakTime)
-		if (isChangingFocusTime && currentMode === 'Focus') {
+		if (isChangingBreakTime || isChangingFocusTime) {
 			resetClock()
-			setIsChangingFocusTime(false)
-		}
-		if (isChangingBreakTime && currentMode === 'Break') {
-			resetClock()
-			setIsChangingBreakTime(false)
+			currentMode === 'Focus' && setIsChangingFocusTime(false)
+			currentMode === 'Break' && setIsChangingBreakTime(false)
 		}
 	}, [focusTime, breakTime, resetFocus, resetBreak])
 
@@ -126,3 +123,4 @@ export const ChangeTimeSettingsButtons = ({ currentMode, setFocusTime, focusTime
 		</section>
 	)
 }
+

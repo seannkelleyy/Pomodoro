@@ -3,8 +3,6 @@ export const ContactFooter = () => {
 		<div
 			style={{
 				marginTop: '2rem',
-				position: 'absolute',
-				bottom: '1rem',
 			}}
 		>
 			<p>This website was built by Sean Kelley, 2024</p>
