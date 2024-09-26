@@ -1,3 +1,9 @@
+# Pomodoro Timer 
+
+I built this web application to help me study and focus on tasks. It is currently hosted here: https://www.timer.seannkelleyy.com/
+
+I built it using Typescript React and host it in Azure.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
