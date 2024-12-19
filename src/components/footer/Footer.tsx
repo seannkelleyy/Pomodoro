@@ -1,10 +1,6 @@
-export const ContactFooter = () => {
+export const Footer = () => {
 	return (
-		<div
-			style={{
-				marginTop: '2rem',
-			}}
-		>
+		<section title='Footer' className='footer'>
 			<p>This website was built by Sean Kelley, 2024</p>
 			<a href='https://github.com/seannkelleyy/Pomodoro'>Source Code On Github</a>
 			<p>Columbus, Ohio</p>
@@ -15,7 +11,7 @@ export const ContactFooter = () => {
 					seannkelleyy1@gmail.com
 				</a>
 			</p>
-		</div>
+		</section>
 	)
 }
 

@@ -4,7 +4,6 @@ import { ChangeTimerTypeButtons } from '../components/buttonGroups/ChangeTypeBut
 import dayjs from 'dayjs'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { FormatTime } from '../utils/FormatTime'
-import { ContactFooter } from '../components/footer/Footer'
 import { useTimer } from '../hooks/useTimer'
 import { useState } from 'react'
 
@@ -91,7 +90,6 @@ export const Timer = () => {
 					)}
 				</>
 			)}
-			<ContactFooter />
 		</section>
 	)
 }

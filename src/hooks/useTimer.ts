@@ -13,6 +13,7 @@ export const useTimer = (initialFocusTime: TimeType, initialBreakTime: TimeType)
 	const [focusTime, setFocusTime] = useState<TimeType>(initialFocusTime)
 	const [breakTime, setBreakTime] = useState<TimeType>(initialBreakTime)
 	const [timerTime, setTimerTime] = useState<TimeType>({ ...initialFocusTime })
+	const countdownAudioRef = useRef(new Audio('/countdown.mp3'));
 
 	const resetClock = () => {
 		if (timerType === 'Focus') {
@@ -54,6 +55,12 @@ export const useTimer = (initialFocusTime: TimeType, initialBreakTime: TimeType)
 		return () => clearInterval(interval)
 	}, [isPaused, timerType])
 
+	useEffect(() => {
+    if (timerType === 'Pomodoro' && timerTime.hours === 0 && timerTime.minutes === 0 && timerTime.seconds <= 5.75) {
+        countdownAudioRef.current.play(); // Play the sound
+	}
+	}, [timerTime]);
+	
 	const handleMouseDown = () => {
 		setResetFillProgress(0)
 		const id = setInterval(() => {
