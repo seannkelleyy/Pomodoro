@@ -1,3 +1,4 @@
+import { JSX } from 'react'
 import { TimeType } from '../models/time'
 
 type FormatTimeProps = {
